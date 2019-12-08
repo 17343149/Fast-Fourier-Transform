@@ -5,7 +5,7 @@
 
 ## 实现过程
 
-网上资料太烂, 看图自己敲就行  
+网上资料太烂, 根本不用看, 对照蝶形图自己敲就行  
 ![](asset/figure0.png)  
 ![](asset/figure1.png)  
 ![](asset/figure2.png)  

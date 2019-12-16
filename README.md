@@ -13,11 +13,19 @@
 
 ## 运行效率
 
-- 测试数据为src/下的512 x 512大小的单通道灰度图, 大约为0.073s = 73ms  
+- 测试数据为[src/49.png](src/49.png), 图片预处理后为512 x 512大小, **单通道灰度图**, FFT大约为0.073 s = 73 ms  
 ![](asset/time.png)  
+![](src/49.png)  
 ![](asset/fft.png)  
+
+## How to run
+```shell
+make
+cd build
+./main
+```
 
 ## 待补充
 
 - IFFT
-- 封装接口
+- 封装接口(Complete)

@@ -20,8 +20,9 @@
 
 ## How to run
 ```shell
-make
 cd build
+cmake ..
+make
 ./main
 ```
 

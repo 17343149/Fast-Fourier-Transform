@@ -1,17 +1,17 @@
 cmake_minimum_required(VERSION 3.12)
-PROJECT(main)
+project(main)
 
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
-FIND_PACKAGE(OpenCV REQUIRED)
+find_package(OpenCV REQUIRED)
 
-ADD_EXECUTABLE(
+add_executable(
     main
     ${PROJECT_SOURCE_DIR}/src/main.cpp
     ${PROJECT_SOURCE_DIR}/src/common.cpp    
 )
 
-TARGET_LINK_LIBRARIES(
+target_link_libraries(
     main
     ${OpenCV_LIBS}
 )

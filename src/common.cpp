@@ -97,15 +97,31 @@ int64_t getTimeNow(){
  * @param width_W_complex 
  * @param height_W_real 
  * @param height_W_complex 
+ * @param sign
  */
-void calculateW(int width, int height, float *width_W_real, float *width_W_complex, float *height_W_real, float *height_W_complex){
+void calculateW(int width, int height, float *width_W_real, float *width_W_complex, float *height_W_real, float *height_W_complex, float sign){
     const double double_pi = 2 * M_PI;
     for(int i = 0; i < width; ++i){
         width_W_real[i] = cos(double_pi * i / width);
-        width_W_complex[i] = -sin(double_pi * i / width);
+        width_W_complex[i] = sign * sin(double_pi * i / width);
     }
     for(int i = 0; i < height; ++i){
         height_W_real[i] = cos(double_pi * i / height);
-        height_W_complex[i] = -sin(double_pi * i / height);
+        height_W_complex[i] = sign * sin(double_pi * i / height);
+    }
+}
+
+/**
+ * @brief Invert the sign of every element in matrix
+ * 
+ * @param width 
+ * @param height 
+ * @param matrix 
+ */
+void invertSign(int width, int height, float **matrix){
+    for(int i = 0; i < height; ++i){
+        for(int j = 0; j < width; ++j){
+            matrix[i][j] = -matrix[i][j];
+        }
     }
 }

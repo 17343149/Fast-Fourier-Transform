@@ -9,6 +9,9 @@ add_executable(
     main
     ${PROJECT_SOURCE_DIR}/src/main.cpp
     ${PROJECT_SOURCE_DIR}/src/common.cpp    
+    ${PROJECT_SOURCE_DIR}/src/fft.cpp
+    ${PROJECT_SOURCE_DIR}/src/fft2d.cpp
+    ${PROJECT_SOURCE_DIR}/src/ifft2d.cpp
 )
 
 target_link_libraries(

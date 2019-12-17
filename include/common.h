@@ -9,6 +9,9 @@
  * 
  */
 
+#ifndef _COMMON_H
+#define _COMMON_H
+
 #include <opencv2/opencv.hpp>
 #include <stdio.h>
 #include <iostream>
@@ -21,13 +24,32 @@ using namespace cv;
 using namespace std;
 using namespace chrono;
 
+/**
+ * @brief 
+ * 
+ */
+void makeImgInCenter(Mat&);
+
+/**
+ * @brief 
+ * 
+ */
+void findProperSize(Mat&);
+
+/**
+ * @brief Used in fft and ifft.
+ *        Scale of result_real and complex is width * height.
+ * 
+ */
 struct fftPair{
     Mat img;
     float **result_real;
     float **result_complex;
 
-    fftPair(Mat arg){
+    fftPair(Mat arg, bool is_print = true){
         img = arg.clone();
+        findProperSize(img);
+        makeImgInCenter(img);
         int width = img.rows;
         int height = img.cols;
         result_real = new float*[width];
@@ -37,6 +59,9 @@ struct fftPair{
             result_complex[i] = new float[height];
             memset(result_real[i], 0, sizeof(float) * height);
             memset(result_complex[i], 0, sizeof(float) * height);
+        }
+        if(is_print){
+            printf("img -> width: %d, height: %d\n", img.cols, img.rows);
         }
     }
 
@@ -50,18 +75,6 @@ struct fftPair{
         delete[]result_complex;
     }
 };
-
-/**
- * @brief 
- * 
- */
-void makeImgInCenter(Mat&);
-
-/**
- * @brief 
- * 
- */
-void findProperSize(Mat&);
 
 /**
  * @brief 
@@ -87,6 +100,14 @@ int64_t getTimeNow();
  * @brief 
  * 
  */
-void calculateW(int, int, float*, float*, float*, float*);
+void calculateW(int, int, float*, float*, float*, float*, float sign = -1.0f);
+
+/**
+ * @brief 
+ * 
+ */
+void invertSign(int, int, float **);
+
+#endif
 
 

@@ -1,22 +1,32 @@
 # Fast-Fourier-Transform
 
-- Date: 2019/12/08
+- Date: 2019/12/17
 - Version: 1.0.0
 
-## 实现过程
+## Description
 
-网上资料太烂, 根本不用看, 对照蝶形图自己敲就行  
+FFT2d && IFFT2d
+
+## Details
+
+- **FFT**  
 ![](asset/figure0.png)  
 ![](asset/figure1.png)  
 ![](asset/figure2.png)  
 ![](asset/figure3.png)  
 
-## 运行效率
+- **IFFT**  
+![](asset/ifft_en.png)  
+![](asset/ifft_ch.png)
 
-- 测试数据为[src/49.png](src/49.png), 图片预处理后为512 x 512大小, **单通道灰度图**, FFT大约为0.073 s = 73 ms  
+
+## Run time
+
+- test file: [src/49.png](src/49.png), to perform FFT & IFFT, it resize(512 x 512), **one channel, grey image** 
 ![](asset/time.png)  
 ![](src/49.png)  
 ![](asset/fft.png)  
+![](asset/ifft.png)
 
 ## How to run
 ```shell
@@ -26,8 +36,3 @@ cmake ..
 make
 ./main
 ```
-
-## 待补充
-
-- IFFT
-- 封装接口(Complete)

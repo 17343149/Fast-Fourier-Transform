@@ -22,7 +22,7 @@ FFT2d && IFFT2d
 
 ## Run time
 
-- test file: [src/49.png](src/49.png), to perform FFT & IFFT, it resize(512 x 512), **one channel, grey image** 
+- test file: [src/49.png](src/49.png), to perform FFT & IFFT, it will resize(512 x 512), **one channel, grey image** 
 ![](asset/time.png)  
 ![](src/49.png)  
 ![](asset/fft.png)  

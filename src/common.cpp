@@ -33,11 +33,15 @@ void makeImgInCenter(Mat &img){
 void findProperSize(Mat &img){
     int width = img.cols;
     int height = img.rows;
-    for(int i = 1; i <= 16; i *= 2){
+    int ori_width = width;
+    int ori_height = height;
+    for(int i = 1; i <= 16; i <<= 1){
         width |= width >> i;
         height |= height >> i;
     }
     width += 1, height += 1;
+    if(ori_width << 1 == width) width = ori_width;
+    if(ori_height << 1 == height) height = ori_height;
     resize(img, img, Size(width, height));
 }
 
@@ -50,8 +54,8 @@ void findProperSize(Mat &img){
  * @param max 
  */
 void calculateLength(fftPair *arg, float **length, float &max){
-    int width = arg->img.rows;
-    int height = arg->img.cols;
+    int width = arg->img.cols;
+    int height = arg->img.rows;
     for(int i = 0; i < height; ++i){
         for(int j = 0; j < width; ++j){
             length[i][j] = log(1.0f + sqrt(pow(arg->result_real[j][i], 2) + pow(arg->result_complex[j][i], 2)));
@@ -69,7 +73,7 @@ void calculateLength(fftPair *arg, float **length, float &max){
  * @param max 
  * @return Mat 
  */
-Mat generateFrequencyImg(int width, int height, float **length, const float max){
+Mat generateFrequencyImg(int height, int width, float **length, const float max){
     Mat res(height, width, CV_8UC1, Scalar(0));
     for(int i = 0; i < height; ++i){
         for(int j = 0; j < width; ++j){
@@ -99,7 +103,7 @@ int64_t getTimeNow(){
  * @param height_W_complex 
  * @param sign
  */
-void calculateW(int width, int height, float *width_W_real, float *width_W_complex, float *height_W_real, float *height_W_complex, float sign){
+void calculateW(int height, int width, float *width_W_real, float *width_W_complex, float *height_W_real, float *height_W_complex, float sign){
     const double double_pi = 2 * M_PI;
     for(int i = 0; i < width; ++i){
         width_W_real[i] = cos(double_pi * i / width);
@@ -118,7 +122,7 @@ void calculateW(int width, int height, float *width_W_real, float *width_W_compl
  * @param height 
  * @param matrix 
  */
-void invertSign(int width, int height, float **matrix){
+void invertSign(int height, int width, float **matrix){
     for(int i = 0; i < height; ++i){
         for(int j = 0; j < width; ++j){
             matrix[i][j] = -matrix[i][j];

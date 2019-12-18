@@ -19,7 +19,7 @@ Mat ifft2d(fftPair *arg){
     float *width_W_complex = new float[width];
     float *height_W_real = new float[height]; // the W of column
     float *height_W_complex = new float[height];
-    calculateW(width, height, width_W_real, width_W_complex, height_W_real, height_W_complex, -1.0f);
+    calculateW(height, width, width_W_real, width_W_complex, height_W_real, height_W_complex, -1.0f);
 
     // middle matrix
     float **mid_real = new float*[height];
@@ -45,7 +45,7 @@ Mat ifft2d(fftPair *arg){
     int64_t BEGIN_TIME = getTimeNow();
 
     // complex conjugate
-    invertSign(height, width, arg->result_complex);
+    invertSign(width, height, arg->result_complex);
 
     // transform in row!
     for(int i = 0; i < height; ++i){
@@ -73,7 +73,7 @@ Mat ifft2d(fftPair *arg){
     printf("ifft2d: %f s (%ld ms)\n", (END_TIME - BEGIN_TIME) / 1000.0f, END_TIME - BEGIN_TIME);
     
     // to recover matrix in fftPair, complex conjugate again
-    invertSign(height, width, arg->result_complex);
+    invertSign(width, height, arg->result_complex);
 
     // delete array
     for(int i = 0; i < height; ++i){

@@ -43,15 +43,15 @@ void findProperSize(Mat&);
  */
 struct fftPair{
     Mat img;
-    float **result_real;
-    float **result_complex;
+    float** result_real;
+    float** result_complex;
 
     fftPair(Mat arg, bool is_print = true){
         img = arg.clone();
         findProperSize(img);
         makeImgInCenter(img);
-        int width = img.rows;
-        int height = img.cols;
+        int width = img.cols;
+        int height = img.rows;
         result_real = new float*[width];
         result_complex = new float*[width];
         for(int i = 0; i < width; ++i){

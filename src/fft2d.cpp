@@ -19,7 +19,7 @@ Mat fft2d(fftPair *arg){
     float *width_W_complex = new float[width];
     float *height_W_real = new float[height]; // W of column
     float *height_W_complex = new float[height];
-    calculateW(width, height, width_W_real, width_W_complex, height_W_real, height_W_complex);
+    calculateW(height, width, width_W_real, width_W_complex, height_W_real, height_W_complex);
 
     // middle matrix to save temporary real and complex values
     float **mid_real = new float*[height];
@@ -54,7 +54,7 @@ Mat fft2d(fftPair *arg){
     // generate the image
     float max = 0;
     calculateLength(arg, length, max);
-    Mat res = generateFrequencyImg(width, height, length, max);
+    Mat res = generateFrequencyImg(height, width, length, max);
 
     for(int i = 0; i < height; ++i){
         delete[]mid_real[i];

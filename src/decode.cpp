@@ -15,24 +15,27 @@
 Mat getDecodeImg(fftPair *encode, fftPair *origin, vector<vector<float> > &vec){
     int width = encode->img.cols;
     int height = encode->img.rows;
-    Mat middle(height, width, CV_8UC1, Scalar(0));
-    float max = 0, min = 0;
-    for(int i = 0; i < height; ++i){
-        for(int j = 0; j < width; ++j){
-            float pixel = encode->result_real[j][i] - origin->result_real[j][i];
-            if(pixel <= 0) middle.at<uchar>(i, j) = 0;
-            else if(pixel >= 255) middle.at<uchar>(i, j) = 255;
-            else middle.at<uchar>(i, j) = pixel;
+    Mat middle(height, width, CV_8UC3, Scalar(0));
+    for(int k = 0; k < 3; ++k){
+        for(int i = 0; i < height; ++i){
+            for(int j = 0; j < width; ++j){
+                float pixel = encode->result_real[k][j][i] - origin->result_real[k][j][i];
+                if(pixel <= 0) middle.at<Vec3b>(i, j)[k] = 0;
+                else if(pixel >= 255) middle.at<Vec3b>(i, j)[k] = 255;
+                else middle.at<Vec3b>(i, j)[k] = pixel;
+            }
         }
     }
 
     imshow("middle", middle);
 
     int half_height = height / 2;
-    Mat res(height, width, CV_8UC1, Scalar(0));
-    for(int i = 0; i < half_height; ++i){
-        for(int j = 0; j < width; ++j){
-            res.at<uchar>(vec[0][i], vec[1][j]) = middle.at<uchar>(i, j);
+    Mat res(height, width, CV_8UC3, Scalar(0));
+    for(int k = 0; k < 3; ++k){
+        for(int i = 0; i < half_height; ++i){
+            for(int j = 0; j < width; ++j){
+                res.at<Vec3b>(vec[0][i], vec[1][j])[k] = middle.at<Vec3b>(i, j)[k];
+            }
         }
     }
 

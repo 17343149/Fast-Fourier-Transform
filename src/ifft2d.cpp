@@ -32,14 +32,22 @@ Mat ifft2d(fftPair *arg){
     }
 
     // result matrix
-    float **res_real = new float*[width];
-    float **res_complex = new float*[width];
-    for(int i = 0; i < width; ++i){
-        res_real[i] = new float[height];
-        res_complex[i] = new float[height];
-        memset(res_real[i], 0, sizeof(float) * height);
-        memset(res_complex[i], 0, sizeof(float) * height);
+    float **res_real[3];
+    float **res_complex[3];
+    for(int k = 0; k < 3; ++k){
+        res_real[k] = new float*[width];
+        res_complex[k] = new float*[width];
+        for(int i = 0; i < width; ++i){
+            res_real[k][i] = new float[height];
+            res_complex[k][i] = new float[height];
+            memset(res_real[k][i], 0, sizeof(float) * height);
+            memset(res_complex[k][i], 0, sizeof(float) * height);
+        }
     }
+
+    // generate image
+    Mat res(height, width, CV_8UC3, Scalar(0));
+    float sum = width * height;
 
     // calculate passed time
     int64_t BEGIN_TIME = getTimeNow();
@@ -55,33 +63,29 @@ Mat ifft2d(fftPair *arg){
 
         // transform in column!
         for(int i = 0; i < width; ++i){
-            fft(arg->img, k, -1, i, 0, height, 1, mid_real, mid_complex, res_real[i], res_complex[i], width_W_real, width_W_complex, height_W_real, height_W_complex, true);
+            fft(arg->img, k, -1, i, 0, height, 1, mid_real, mid_complex, res_real[k][i], res_complex[k][i], width_W_real, width_W_complex, height_W_real, height_W_complex, true);
         }
-    }
 
-    // generate image
-    Mat res(height, width, CV_8UC1, Scalar(0));
-    float sum = width * height;
-
-    for(int i = 0; i < height; ++i){
-        for(int j = 0; j < width; ++j){
-            res.at<uchar>(i, j) = res_real[j][i] / sum;
+        for(int i = 0; i < height; ++i){
+            for(int j = 0; j < width; ++j){
+                res.at<Vec3b>(i, j)[k] = res_real[k][j][i] / sum;
+            }
         }
+        invertSign(width, height, arg->result_complex[k]);
     }
 
     // calculate passed time
     int64_t END_TIME = getTimeNow();
     printf("ifft2d: %f s (%ld ms)\n", (END_TIME - BEGIN_TIME) / 1000.0f, END_TIME - BEGIN_TIME);
-    
-    for(int k = 0; k < 3; ++k){
-        // to recover matrix in fftPair, complex conjugate again
-        invertSign(width, height, arg->result_complex[k]);
-    }
 
     // delete array
-    for(int i = 0; i < height; ++i){
-        delete[]res_real[i];
-        delete[]res_complex[i];
+    for(int k = 0; k < 3; ++k){
+        for(int i = 0; i < height; ++i){
+            delete[]res_real[k][i];
+            delete[]res_complex[k][i];
+        }
+        delete[]res_real[k];
+        delete[]res_complex[k];
     }
     for(int i = 0; i < height; ++i){
         delete[]mid_real[i];
@@ -89,8 +93,6 @@ Mat ifft2d(fftPair *arg){
     }
     delete[]mid_real;
     delete[]mid_complex;
-    delete[]res_real;
-    delete[]res_complex;
     delete[]width_W_real;
     delete[]width_W_complex;
     delete[]height_W_real;

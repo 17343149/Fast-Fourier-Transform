@@ -57,27 +57,47 @@ void findProperSize(Mat &img, int height, int width){
  * @param max 
  * @return Mat 
  */
-Mat generateFrequencyImg(fftPair *arg){
+vector<Mat> generateFrequencyImg(fftPair *arg){
     int width = arg->img.cols;
     int height = arg->img.rows;
-    Mat res(height, width, CV_8UC1, Scalar(0));
-    float max = 0;
+
+    Mat B(height, width, CV_8UC1, Scalar(0));
+    Mat G(height, width, CV_8UC1, Scalar(0));
+    Mat R(height, width, CV_8UC1, Scalar(0));
+    Mat color_img(height, width, CV_8UC3, Scalar(0));
     float **length = new float*[height];
     for(int i = 0; i < height; ++i){
         length[i] = new float[width];
         memset(length[i], 0, sizeof(float) * width);
     }
-    for(int i = 0; i < height; ++i){
-        for(int j = 0; j < width; ++j){
-            length[i][j] = log(1.0f + sqrt(pow(arg->result_real[j][i], 2) + pow(arg->result_complex[j][i], 2)));
-            if(max < length[i][j]) max = length[i][j];
+    for(int k = 0; k < 3; ++k){
+        float max = 0;
+        for(int i = 0; i < height; ++i){
+            for(int j = 0; j < width; ++j){
+                length[i][j] = log(1.0f + sqrt(pow(arg->result_real[k][j][i], 2) + pow(arg->result_complex[k][j][i], 2)));
+                if(max < length[i][j]) max = length[i][j];
+            }
+        }
+        for(int i = 0; i < height; ++i){
+            for(int j = 0; j < width; ++j){
+                float value = length[i][j] * 255 / max;
+                if(k == 0){
+                    B.at<uchar>(i, j) = value;
+                }else if(k == 1){
+                    G.at<uchar>(i, j) = value;
+                }else if(k == 2){
+                    R.at<uchar>(i, j) = value;
+                }
+                color_img.at<Vec3b>(i, j)[k] = value;
+            }
         }
     }
-    for(int i = 0; i < height; ++i){
-        for(int j = 0; j < width; ++j){
-            res.at<uchar>(i, j) = 0.5f + length[i][j] * 255 / max;
-        }
-    }
+    vector<Mat> res;
+    res.push_back(B);
+    res.push_back(G);
+    res.push_back(R);
+    res.push_back(color_img);
+
     for(int i = 0; i < height; ++i){
         delete[]length[i];
     }

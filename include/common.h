@@ -98,7 +98,7 @@ struct fftPair{
  * 
  * @return Mat 
  */
-Mat generateFrequencyImg(fftPair*);
+vector<Mat> generateFrequencyImg(fftPair*);
 
 /**
  * @brief Get the Time Now

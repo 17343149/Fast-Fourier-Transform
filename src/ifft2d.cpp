@@ -44,17 +44,19 @@ Mat ifft2d(fftPair *arg){
     // calculate passed time
     int64_t BEGIN_TIME = getTimeNow();
 
-    // complex conjugate
-    invertSign(width, height, arg->result_complex);
+    for(int k = 0; k < 3; ++k){
+        // complex conjugate
+        invertSign(width, height, arg->result_complex[k]);
 
-    // transform in row!
-    for(int i = 0; i < height; ++i){
-        fft(arg->img, i, -1, 0, width, 1, arg->result_real, arg->result_complex, mid_real[i], mid_complex[i], width_W_real, width_W_complex, height_W_real, height_W_complex, true);
-    }
+        // transform in row!
+        for(int i = 0; i < height; ++i){
+            fft(arg->img, k, i, -1, 0, width, 1, arg->result_real[k], arg->result_complex[k], mid_real[i], mid_complex[i], width_W_real, width_W_complex, height_W_real, height_W_complex, true);
+        }
 
-    // transform in column!
-    for(int i = 0; i < width; ++i){
-        fft(arg->img, -1, i, 0, height, 1, mid_real, mid_complex, res_real[i], res_complex[i], width_W_real, width_W_complex, height_W_real, height_W_complex, true);
+        // transform in column!
+        for(int i = 0; i < width; ++i){
+            fft(arg->img, k, -1, i, 0, height, 1, mid_real, mid_complex, res_real[i], res_complex[i], width_W_real, width_W_complex, height_W_real, height_W_complex, true);
+        }
     }
 
     // generate image
@@ -71,8 +73,10 @@ Mat ifft2d(fftPair *arg){
     int64_t END_TIME = getTimeNow();
     printf("ifft2d: %f s (%ld ms)\n", (END_TIME - BEGIN_TIME) / 1000.0f, END_TIME - BEGIN_TIME);
     
-    // to recover matrix in fftPair, complex conjugate again
-    invertSign(width, height, arg->result_complex);
+    for(int k = 0; k < 3; ++k){
+        // to recover matrix in fftPair, complex conjugate again
+        invertSign(width, height, arg->result_complex[k]);
+    }
 
     // delete array
     for(int i = 0; i < height; ++i){

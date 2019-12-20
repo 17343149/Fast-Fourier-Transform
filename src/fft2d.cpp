@@ -11,7 +11,7 @@
 
 #include "fft2d.h"
 
-Mat fft2d(fftPair *arg){
+vector<Mat> fft2d(fftPair *arg){
     int width = arg->img.cols, height = arg->img.rows;
 
     // calculate W
@@ -34,15 +34,15 @@ Mat fft2d(fftPair *arg){
     // calculate passed time
     int64_t BEGIN_TIME = getTimeNow();
 
-    for(int i = 0; i < 3; ++i){
+    for(int k = 0; k < 3; ++k){
         // transform in row!
         for(int i = 0; i < height; ++i){
-            fft(arg->img, i, -1, 0, width, 1, nullptr, nullptr, mid_real[i], mid_complex[i], width_W_real, width_W_complex, height_W_real, height_W_complex);
+            fft(arg->img, k, i, -1, 0, width, 1, nullptr, nullptr, mid_real[i], mid_complex[i], width_W_real, width_W_complex, height_W_real, height_W_complex);
         }
 
         // transform in column!
         for(int i = 0; i < width; ++i){
-            fft(arg->img, -1, i, 0, height, 1, mid_real, mid_complex, arg->result_real[i], arg->result_complex[i], width_W_real, width_W_complex, height_W_real, height_W_complex);
+            fft(arg->img, k, -1, i, 0, height, 1, mid_real, mid_complex, arg->result_real[k][i], arg->result_complex[k][i], width_W_real, width_W_complex, height_W_real, height_W_complex);
         }
     }
 
@@ -51,7 +51,7 @@ Mat fft2d(fftPair *arg){
     printf("fft2d: %f s (%ld ms)\n", (END_TIME - BEGIN_TIME) / 1000.0f, END_TIME - BEGIN_TIME);
 
     // generate the image
-    Mat res = generateFrequencyImg(arg);
+    vector<Mat> res = generateFrequencyImg(arg);
 
     for(int i = 0; i < height; ++i){
         delete[]mid_real[i];

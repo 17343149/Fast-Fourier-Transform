@@ -64,7 +64,7 @@ void fft(const Mat &img, int channel, int row, int col, int idx, int K, int step
             res_real[0] = row >= 0? mid_real[idx][row]: mid_real[idx][col];
             res_complex[0] = row >= 0? mid_complex[idx][row]: mid_complex[idx][col];
         }else{
-            res_real[0] = row >= 0? img.at<float>(row, idx): mid_real[idx][col];
+            res_real[0] = row >= 0? img.at<Vec3f>(row, idx)[channel]: mid_real[idx][col];
             res_complex[0] = row >= 0? 0: mid_complex[idx][col];
         }
     }

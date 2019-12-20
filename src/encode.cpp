@@ -51,7 +51,7 @@ void encode(fftPair *arg, Mat &img, float factor){
     int height = arg->img.rows;
     for(int i = 0; i < height; ++i){
         for(int j = 0; j < width; ++j){
-            arg->result_real[j][i] += factor * (float)img.at<uchar>(i, j);
+            arg->result_real[0][j][i] += factor * (float)img.at<uchar>(i, j);
         }
     }
 }

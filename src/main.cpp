@@ -31,8 +31,8 @@ void TEST(Mat img){
 
 int main(){
     // initialize img
-    Mat img = imread(girlfriend, 0);
-    Mat water_img = imread(addition, 0);
+    Mat img = imread(girlfriend);
+    Mat water_img = imread(addition);
 
     fftPair encryption(img);
 
@@ -42,8 +42,11 @@ int main(){
     // imshow("encode", addition_img);
 
     // FFT
-    Mat fft_img = fft2d(&encryption);
-    imshow("fft", fft_img);
+    vector<Mat> fft_img = fft2d(&encryption);
+    imshow("B", fft_img[0]);
+    imshow("G", fft_img[1]);
+    imshow("R", fft_img[2]);
+    imshow("BGR", fft_img[3]);
 
     // encode
     // encode(&encryption, addition_img, 2.0f);

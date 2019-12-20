@@ -21,6 +21,6 @@
  * @param arg: fftPair
  * @return Mat: the image in frequency
  */
-Mat fft2d(fftPair *arg);
+vector<Mat> fft2d(fftPair *arg);
 
 #endif

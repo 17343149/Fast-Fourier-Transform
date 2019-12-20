@@ -19,7 +19,6 @@
 void makeImgInCenter(Mat &img){
     int width = img.cols;
     int height = img.rows;
-    img.convertTo(img, CV_32FC1);
     for(int i = 0; i < height; ++i)
         for(int j = 0; j < width; ++j)
             if((i + j) & 1) img.at<float>(i, j) = -img.at<float>(i, j);
@@ -30,37 +29,22 @@ void makeImgInCenter(Mat &img){
  * 
  * @param img 
  */
-void findProperSize(Mat &img){
-    int width = img.cols;
-    int height = img.rows;
-    int ori_width = width;
-    int ori_height = height;
-    for(int i = 1; i <= 16; i <<= 1){
-        width |= width >> i;
-        height |= height >> i;
-    }
-    width += 1, height += 1;
-    if(ori_width << 1 == width) width = ori_width;
-    if(ori_height << 1 == height) height = ori_height;
-    resize(img, img, Size(width, height));
-}
-
-/**
- * @brief Use log() to calculate the length in frequency
- *        And record the max length
- * 
- * @param arg 
- * @param length 
- * @param max 
- */
-void calculateLength(fftPair *arg, float **length, float &max){
-    int width = arg->img.cols;
-    int height = arg->img.rows;
-    for(int i = 0; i < height; ++i){
-        for(int j = 0; j < width; ++j){
-            length[i][j] = log(1.0f + sqrt(pow(arg->result_real[j][i], 2) + pow(arg->result_complex[j][i], 2)));
-            if(max < length[i][j]) max = length[i][j];
+void findProperSize(Mat &img, int height, int width){
+    if(height <= 0 || width <= 0){
+        width = img.cols;
+        height = img.rows;
+        int ori_width = width;
+        int ori_height = height;
+        for(int i = 1; i <= 16; i <<= 1){
+            width |= width >> i;
+            height |= height >> i;
         }
+        width += 1, height += 1;
+        if(ori_width << 1 == width) width = ori_width;
+        if(ori_height << 1 == height) height = ori_height;
+        resize(img, img, Size(width, height));
+    }else{
+        resize(img, img, Size(width, height));
     }
 }
 
@@ -73,13 +57,31 @@ void calculateLength(fftPair *arg, float **length, float &max){
  * @param max 
  * @return Mat 
  */
-Mat generateFrequencyImg(int height, int width, float **length, const float max){
+Mat generateFrequencyImg(fftPair *arg){
+    int width = arg->img.cols;
+    int height = arg->img.rows;
     Mat res(height, width, CV_8UC1, Scalar(0));
+    float max = 0;
+    float **length = new float*[height];
+    for(int i = 0; i < height; ++i){
+        length[i] = new float[width];
+        memset(length[i], 0, sizeof(float) * width);
+    }
+    for(int i = 0; i < height; ++i){
+        for(int j = 0; j < width; ++j){
+            length[i][j] = log(1.0f + sqrt(pow(arg->result_real[j][i], 2) + pow(arg->result_complex[j][i], 2)));
+            if(max < length[i][j]) max = length[i][j];
+        }
+    }
     for(int i = 0; i < height; ++i){
         for(int j = 0; j < width; ++j){
             res.at<uchar>(i, j) = 0.5f + length[i][j] * 255 / max;
         }
     }
+    for(int i = 0; i < height; ++i){
+        delete[]length[i];
+    }
+    delete[]length;
     return res;
 }
 
@@ -127,5 +129,26 @@ void invertSign(int height, int width, float **matrix){
         for(int j = 0; j < width; ++j){
             matrix[i][j] = -matrix[i][j];
         }
+    }
+}
+
+/**
+ * @brief Get the Rand Sequence object
+ * 
+ * @param arr 
+ * @param low 
+ * @param high 
+ */
+void getRandSequence(vector<float> &vec, int low, int high){
+    srand(time(NULL));
+    int count = high - low;
+    int tail = high - 1;
+    for(int i = 0; i < count; ++i){
+        int idx = rand() % (count - i) + low;
+        float temp = 0;
+        temp = vec[idx];
+        vec[idx] = vec[tail];
+        vec[tail] = temp;
+        --tail;
     }
 }

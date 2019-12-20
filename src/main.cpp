@@ -12,18 +12,50 @@
 #include "common.h"
 #include "fft2d.h"
 #include "ifft2d.h"
+#include "encode.h"
+#include "decode.h"
+
+static string test_img = "../src/49.png";
+static string girlfriend = "../src/girlfriend.jpg";
+static string addition = "../src/addition.jpg";
+
+void TEST(Mat img){
+    cout << img.type() << endl;
+    for(int i = 0; i < img.rows; ++i){
+        for(int j = 0; j < img.cols; ++j){
+            unsigned int temp = img.at<uchar>(i, j);
+            cout << i << ", " << j << ": " << temp << endl;
+        }
+    }
+}
 
 int main(){
     // initialize img
-    Mat img = imread("../src/49.png", 0);
+    Mat img = imread(girlfriend, 0);
+    Mat water_img = imread(addition, 0);
 
-    // FFT & IFFT
-    fftPair trans(img);
-    Mat fft_img = fft2d(&trans);
+    fftPair encryption(img);
+
+    // process addition image
+    // vector<vector<float> > vec;
+    // Mat addition_img = getEncodeImg(water_img, &encryption, vec);
+    // imshow("encode", addition_img);
+
+    // FFT
+    Mat fft_img = fft2d(&encryption);
     imshow("fft", fft_img);
-    waitKey(1000);
-    Mat ifft_img = ifft2d(&trans);
-    imshow("ifft", ifft_img);
-    waitKey(1000);
+
+    // encode
+    // encode(&encryption, addition_img, 2.0f);
+
+    // // IFFT
+    // Mat ifft_img = ifft2d(&encryption);
+    // imshow("ifft", ifft_img);
+
+    // // decode
+    // Mat res = decode(ifft_img, img, vec);
+    // imshow("res", res);
+
+    waitKey();
     return 0;
 }

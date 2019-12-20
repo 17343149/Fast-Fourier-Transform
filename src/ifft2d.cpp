@@ -60,11 +60,10 @@ Mat ifft2d(fftPair *arg){
     // generate image
     Mat res(height, width, CV_8UC1, Scalar(0));
     float sum = width * height;
+
     for(int i = 0; i < height; ++i){
         for(int j = 0; j < width; ++j){
-            float pixel = res_real[j][i] / sum;
-            if(pixel < 0) pixel = -pixel;
-            res.at<uchar>(i, j) = 0.5f + pixel;
+            res.at<uchar>(i, j) = res_real[j][i] / sum;
         }
     }
 

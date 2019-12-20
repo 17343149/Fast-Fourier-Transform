@@ -19,6 +19,8 @@
 #include <vector>
 #include <ctime>
 #include <chrono>
+#include <stdlib.h>
+#include <time.h>
 
 using namespace cv;
 using namespace std;
@@ -34,7 +36,7 @@ void makeImgInCenter(Mat&);
  * @brief 
  * 
  */
-void findProperSize(Mat&);
+void findProperSize(Mat&, int height = -1, int width = -1);
 
 /**
  * @brief Used in fft and ifft.
@@ -43,22 +45,24 @@ void findProperSize(Mat&);
  */
 struct fftPair{
     Mat img;
-    float** result_real;
-    float** result_complex;
+    float** result_real[3];
+    float** result_complex[3];
 
-    fftPair(Mat arg, bool is_print = true){
+    fftPair(Mat arg, int img_height = -1, int img_width = -1, bool is_print = true){
         img = arg.clone();
-        findProperSize(img);
-        makeImgInCenter(img);
+        findProperSize(img, img_height, img_width);
         int width = img.cols;
         int height = img.rows;
-        result_real = new float*[width];
-        result_complex = new float*[width];
-        for(int i = 0; i < width; ++i){
-            result_real[i] = new float[height];
-            result_complex[i] = new float[height];
-            memset(result_real[i], 0, sizeof(float) * height);
-            memset(result_complex[i], 0, sizeof(float) * height);
+        img.convertTo(img, CV_32FC3);
+        for(int i = 0; i < 3; ++i){
+            result_real[i] = new float*[width];
+            result_complex[i] = new float*[width];
+            for(int j = 0; j < width; ++j){
+                result_real[i][j] = new float[height];
+                result_complex[i][j] = new float[height];
+                memset(result_real[i][j], 0, sizeof(float) * height);
+                memset(result_complex[i][j], 0, sizeof(float) * height);
+            }
         }
         if(is_print){
             printf("img -> width: %d, height: %d\n", img.cols, img.rows);
@@ -67,27 +71,34 @@ struct fftPair{
 
     ~fftPair(){
         int width = img.rows;
-        for(int i = 0; i < width; ++i){
+        for(int i = 0; i < 3; ++i){
+            for(int j = 0; j < width; ++j){
+                delete[]result_real[i][j];
+                delete[]result_complex[i][j];
+            }
             delete[]result_real[i];
             delete[]result_complex[i];
         }
-        delete[]result_real;
-        delete[]result_complex;
     }
-};
 
-/**
- * @brief 
- * 
- */
-void calculateLength(fftPair*, float**, float&);
+    void printMatrix(){
+        int width = img.cols;
+        int height = img.rows;
+        for(int i = 0; i < height; ++i){
+            for(int j = 0; j < width; ++j){
+                cout << "(" << i << ", " << j << ") -> (" << result_real[j][i] << ", " << result_complex[j][i] << ")" << endl;
+            }
+        }
+    }
+
+};
 
 /**
  * @brief 
  * 
  * @return Mat 
  */
-Mat generateFrequencyImg(int, int, float**, const float);
+Mat generateFrequencyImg(fftPair*);
 
 /**
  * @brief Get the Time Now
@@ -107,6 +118,12 @@ void calculateW(int, int, float*, float*, float*, float*, float sign = -1.0f);
  * 
  */
 void invertSign(int, int, float **);
+
+/**
+ * @brief 
+ * 
+ */
+void getRandSequence(vector<float> &vec, int low, int high);
 
 #endif
 

@@ -11,7 +11,7 @@
 
 #include "fft.h"
 
-void fft(const Mat &img, int row, int col, int idx, int K, int step_scale, 
+void fft(const Mat &img, int channel, int row, int col, int idx, int K, int step_scale, 
             float **mid_real, float **mid_complex, 
             float *res_real, float *res_complex, 
             float *width_W_real, float *width_W_complex, 
@@ -33,10 +33,10 @@ void fft(const Mat &img, int row, int col, int idx, int K, int step_scale,
         memset(odd_complex, 0, sizeof(float) * K);
 
         // even
-        fft(img, row, col, idx, K, next_step_scale, mid_real, mid_complex, even_real, even_complex, width_W_real, width_W_complex, height_W_real, height_W_complex, is_ifft);
+        fft(img, channel, row, col, idx, K, next_step_scale, mid_real, mid_complex, even_real, even_complex, width_W_real, width_W_complex, height_W_real, height_W_complex, is_ifft);
         
         // odd
-        fft(img, row, col, idx + step_scale, K, next_step_scale, mid_real, mid_complex, odd_real, odd_complex, width_W_real, width_W_complex, height_W_real, height_W_complex, is_ifft);
+        fft(img, channel, row, col, idx + step_scale, K, next_step_scale, mid_real, mid_complex, odd_real, odd_complex, width_W_real, width_W_complex, height_W_real, height_W_complex, is_ifft);
 
         // f(x) = even(x) + odd(x) * W
         // f(x + K) = even(x) - odd(x) * W

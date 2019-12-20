@@ -19,6 +19,7 @@
  *        In fact, it's one dimension FFT, for example, a row or a column
  * 
  * @param img: origin image
+ * @param channel: img channel(B, G, R)
  * @param row: IF row > 0 THEN transform row ELSE transform column
  * @param col: choose the column to transform
  * @param idx: the index of begin of array, the value is 0 at the beginning 
@@ -34,7 +35,7 @@
  * @param height_W_complex 
  * @param is_ifft: if used to calculate IFFT, default is false
  */
-void fft(const Mat &img, int row, int col, int idx, int K, int step_scale, 
+void fft(const Mat &img, int channel, int row, int col, int idx, int K, int step_scale, 
             float **mid_real, float **mid_complex, 
             float *res_real, float *res_complex, 
             float *width_W_real, float *width_W_complex, 

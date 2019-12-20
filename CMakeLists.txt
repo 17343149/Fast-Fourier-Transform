@@ -12,6 +12,8 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/src/fft.cpp
     ${PROJECT_SOURCE_DIR}/src/fft2d.cpp
     ${PROJECT_SOURCE_DIR}/src/ifft2d.cpp
+    ${PROJECT_SOURCE_DIR}/src/decode.cpp
+    ${PROJECT_SOURCE_DIR}/src/encode.cpp
 )
 
 target_link_libraries(

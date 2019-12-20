@@ -16,11 +16,11 @@ Mat getEncodeImg(Mat &img, fftPair *arg, vector<vector<float> > &vec){
     int width = arg->img.cols;
     int half_height = height / 2;
 
-    Mat temp(half_height, width, CV_8UC3, Scalar(0));
+    Mat temp(half_height, width, CV_32FC3, Scalar(0));
     for(int k = 0; k < 3; ++k){
         for(int i = 0; i < img.rows; ++i){
             for(int j = 0; j < img.cols; ++j){
-                temp.at<Vec3b>(i, j)[k] = img.at<Vec3b>(i, j)[k];
+                temp.at<Vec3f>(i, j)[k] = (float)img.at<Vec3b>(i, j)[k] / 255.0;
             }
         }
     }
@@ -38,11 +38,11 @@ Mat getEncodeImg(Mat &img, fftPair *arg, vector<vector<float> > &vec){
     vec.push_back(M);
     vec.push_back(N);
 
-    Mat res(height, width, CV_8UC3, Scalar(0));
+    Mat res(height, width, CV_32FC3, Scalar(0));
     for(int k = 0; k < 3; ++k){
         for(int i = 0; i < half_height; ++i){
             for(int j = 0; j < width; ++j){
-                res.at<Vec3b>(i, j)[k] = res.at<Vec3b>(height - 1 - i, width - 1 - j)[k] = temp.at<Vec3b>(M[i], N[j])[k];
+                res.at<Vec3f>(i, j)[k] = res.at<Vec3f>(height - 1 - i, width - 1 - j)[k] = temp.at<Vec3f>(M[i], N[j])[k];
             }
         }
     }
@@ -55,8 +55,12 @@ void encode(fftPair *arg, Mat &img, float factor){
     int height = arg->img.rows;
     for(int k = 0; k < 3; ++k){
         for(int i = 0; i < height; ++i){
-            for(int j = 0; j < width; ++j){
-                arg->result_real[k][j][i] += factor * img.at<Vec3b>(i, j)[k];
+            for(int j = 0; j < width; ++j){ 
+                if(k == 0 && i == 0)
+                    printf("(%d, %d, %d) -> %f + ", i, j, k, arg->result_real[k][j][i]);
+                arg->result_real[k][j][i] += factor * img.at<Vec3f>(i, j)[k];
+                if(k == 0 && i == 0)
+                    printf("%f = %f\n", factor * img.at<Vec3f>(i, j)[k], arg->result_real[k][j][i]);
             }
         }
     }

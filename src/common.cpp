@@ -61,10 +61,10 @@ vector<Mat> generateFrequencyImg(fftPair *arg){
     int width = arg->img.cols;
     int height = arg->img.rows;
 
-    Mat B(height, width, CV_8UC1, Scalar(0));
-    Mat G(height, width, CV_8UC1, Scalar(0));
-    Mat R(height, width, CV_8UC1, Scalar(0));
-    Mat color_img(height, width, CV_8UC3, Scalar(0));
+    Mat B(height, width, CV_32FC1, Scalar(0));
+    Mat G(height, width, CV_32FC1, Scalar(0));
+    Mat R(height, width, CV_32FC1, Scalar(0));
+    Mat color_img(height, width, CV_32FC3, Scalar(0));
     float **length = new float*[height];
     for(int i = 0; i < height; ++i){
         length[i] = new float[width];
@@ -80,15 +80,15 @@ vector<Mat> generateFrequencyImg(fftPair *arg){
         }
         for(int i = 0; i < height; ++i){
             for(int j = 0; j < width; ++j){
-                float value = length[i][j] * 255 / max;
+                float value = length[i][j] / max;
                 if(k == 0){
-                    B.at<uchar>(i, j) = value;
+                    B.at<float>(i, j) = value;
                 }else if(k == 1){
-                    G.at<uchar>(i, j) = value;
+                    G.at<float>(i, j) = value;
                 }else if(k == 2){
-                    R.at<uchar>(i, j) = value;
+                    R.at<float>(i, j) = value;
                 }
-                color_img.at<Vec3b>(i, j)[k] = value;
+                color_img.at<Vec3f>(i, j)[k] = value;
             }
         }
     }

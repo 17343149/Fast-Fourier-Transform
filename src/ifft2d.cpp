@@ -46,7 +46,7 @@ Mat ifft2d(fftPair *arg){
     }
 
     // generate image
-    Mat res(height, width, CV_8UC3, Scalar(0));
+    Mat res(height, width, CV_32FC3, Scalar(0));
     float sum = width * height;
 
     // calculate passed time
@@ -68,7 +68,7 @@ Mat ifft2d(fftPair *arg){
 
         for(int i = 0; i < height; ++i){
             for(int j = 0; j < width; ++j){
-                res.at<Vec3b>(i, j)[k] = res_real[k][j][i] / sum;
+                res.at<Vec3f>(i, j)[k] = res_real[k][j][i] / sum;
             }
         }
         invertSign(width, height, arg->result_complex[k]);

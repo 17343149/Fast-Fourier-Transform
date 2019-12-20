@@ -53,7 +53,10 @@ struct fftPair{
         findProperSize(img, img_height, img_width);
         int width = img.cols;
         int height = img.rows;
-        img.convertTo(img, CV_32FC3);
+        if(img.type() != 21){
+            img.convertTo(img, CV_32FC3);
+            img /= 255.0;
+        }
         for(int i = 0; i < 3; ++i){
             result_real[i] = new float*[width];
             result_complex[i] = new float*[width];
@@ -84,9 +87,11 @@ struct fftPair{
     void printMatrix(){
         int width = img.cols;
         int height = img.rows;
-        for(int i = 0; i < height; ++i){
-            for(int j = 0; j < width; ++j){
-                cout << "(" << i << ", " << j << ") -> (" << result_real[j][i] << ", " << result_complex[j][i] << ")" << endl;
+        for(int k = 0; k < 1; ++k){
+            for(int i = 0; i < 1; ++i){
+                for(int j = 0; j < 20; ++j){
+                    cout << "(" << i << ", " << j << ") -> (" << result_real[k][j][i] << ", " << result_complex[k][j][i] << ")" << endl;
+                }
             }
         }
     }

@@ -15,14 +15,16 @@
 Mat getDecodeImg(fftPair *encode, fftPair *origin, vector<vector<float> > &vec){
     int width = encode->img.cols;
     int height = encode->img.rows;
-    Mat middle(height, width, CV_8UC3, Scalar(0));
+    Mat middle(height, width, CV_32FC3, Scalar(0));
     for(int k = 0; k < 3; ++k){
         for(int i = 0; i < height; ++i){
             for(int j = 0; j < width; ++j){
                 float pixel = encode->result_real[k][j][i] - origin->result_real[k][j][i];
-                if(pixel <= 0) middle.at<Vec3b>(i, j)[k] = 0;
-                else if(pixel >= 255) middle.at<Vec3b>(i, j)[k] = 255;
-                else middle.at<Vec3b>(i, j)[k] = pixel;
+                if(pixel <= 0) middle.at<Vec3f>(i, j)[k] = 0;
+                else if(pixel >= 1) middle.at<Vec3f>(i, j)[k] = 1;
+                else middle.at<Vec3f>(i, j)[k] = pixel;
+                if(k == 0 && i == 0)
+                    printf("(%d, %d, %d) -> %f - %f = %f\n", i, j, k, encode->result_real[k][j][i], origin->result_real[k][j][i], pixel);
             }
         }
     }
@@ -30,11 +32,11 @@ Mat getDecodeImg(fftPair *encode, fftPair *origin, vector<vector<float> > &vec){
     imshow("middle", middle);
 
     int half_height = height / 2;
-    Mat res(height, width, CV_8UC3, Scalar(0));
+    Mat res(height, width, CV_32FC3, Scalar(0));
     for(int k = 0; k < 3; ++k){
         for(int i = 0; i < half_height; ++i){
             for(int j = 0; j < width; ++j){
-                res.at<Vec3b>(vec[0][i], vec[1][j])[k] = middle.at<Vec3b>(i, j)[k];
+                res.at<Vec3f>(vec[0][i], vec[1][j])[k] = middle.at<Vec3f>(i, j)[k];
             }
         }
     }

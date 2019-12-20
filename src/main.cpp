@@ -33,12 +33,15 @@ int main(){
 
     // FFT
     vector<Mat> fft_img = fft2d(&encryption);
+    imshow("b", fft_img[0]);
+    imshow("g", fft_img[1]);
+    imshow("r", fft_img[2]);
     imshow("fft", fft_img[3]);
 
     // encode
-    encode(&encryption, addition_img, 1.0f);
+    encode(&encryption, addition_img, 2.0f);
 
-    Mat ifft_img = ifft2d(&encryption).clone();
+    Mat ifft_img = ifft2d(&encryption);
     imshow("ifft", ifft_img);
 
     // decode

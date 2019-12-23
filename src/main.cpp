@@ -15,39 +15,23 @@
 #include "encode.h"
 #include "decode.h"
 
-static string test_img = "../src/49.png";
-static string girlfriend = "../src/girlfriend.jpg";
-static string addition = "../src/addition.jpg";
+static string TEST_IMG = "../test_img/test1.jpg";
+static string WATER_IMG = "../test_img/water1.jpg";
+static string RESULT_DIR = "../res/";
 
 int main(){
     // initialize img
-    Mat img = imread(girlfriend);
-    Mat water_img = imread(addition);
+    Mat img = imread(TEST_IMG);
+    Mat water_img = imread(WATER_IMG);
 
-    fftPair encryption(img);
+    Mat processed_img = encode(img, water_img);
 
-    // process addition image
-    vector<vector<float> > vec;
-    Mat addition_img = getEncodeImg(water_img, &encryption, vec);
-    imshow("encode", addition_img);
+    // Mat processed_img = imread("../res/processed_test3.jpg");
 
-    // FFT
-    vector<Mat> fft_img = fft2d(&encryption);
-    imshow("b", fft_img[0]);
-    imshow("g", fft_img[1]);
-    imshow("r", fft_img[2]);
-    imshow("fft", fft_img[3]);
+    Mat res_img = decode(processed_img, img);
 
-    // encode
-    encode(&encryption, addition_img, 2.0f);
-
-    Mat ifft_img = ifft2d(&encryption);
-    imshow("ifft", ifft_img);
-
-    // decode
-    Mat res = decode(ifft_img, img, vec);
-    imshow("res", res);
-
+    imshow("processed", processed_img);
+    imshow("res", res_img);
     waitKey();
     return 0;
 }

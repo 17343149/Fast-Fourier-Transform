@@ -11,7 +11,7 @@
 
 #include "fft2d.h"
 
-vector<Mat> fft2d(fftPair *arg){
+Mat fft2d(fftPair *arg){
     int width = arg->img.cols, height = arg->img.rows;
 
     // calculate W
@@ -51,7 +51,7 @@ vector<Mat> fft2d(fftPair *arg){
     printf("fft2d: %f s (%ld ms)\n", (END_TIME - BEGIN_TIME) / 1000.0f, END_TIME - BEGIN_TIME);
 
     // generate the image
-    vector<Mat> res = generateFrequencyImg(arg);
+    Mat res = generateFrequencyImg(arg);
 
     for(int i = 0; i < height; ++i){
         delete[]mid_real[i];

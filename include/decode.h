@@ -24,13 +24,12 @@
 Mat getDecodeImg(fftPair *encode, fftPair *origin, vector<vector<float> > &vec);
 
 /**
- * @brief 
+ * @brief Interface of decode
  * 
- * @param water_img 
+ * @param img 
  * @param ori_img 
- * @param vec 
  * @return Mat 
  */
-Mat decode(Mat &ifft_img, Mat &ori_img, vector<vector<float> > &vec);
+Mat decode(Mat img, Mat ori_img);
 
 #endif

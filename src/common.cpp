@@ -57,13 +57,10 @@ void findProperSize(Mat &img, int height, int width){
  * @param max 
  * @return Mat 
  */
-vector<Mat> generateFrequencyImg(fftPair *arg){
+Mat generateFrequencyImg(fftPair *arg){
     int width = arg->img.cols;
     int height = arg->img.rows;
 
-    Mat B(height, width, CV_32FC1, Scalar(0));
-    Mat G(height, width, CV_32FC1, Scalar(0));
-    Mat R(height, width, CV_32FC1, Scalar(0));
     Mat color_img(height, width, CV_32FC3, Scalar(0));
     float **length = new float*[height];
     for(int i = 0; i < height; ++i){
@@ -80,29 +77,16 @@ vector<Mat> generateFrequencyImg(fftPair *arg){
         }
         for(int i = 0; i < height; ++i){
             for(int j = 0; j < width; ++j){
-                float value = length[i][j] / max;
-                if(k == 0){
-                    B.at<float>(i, j) = value;
-                }else if(k == 1){
-                    G.at<float>(i, j) = value;
-                }else if(k == 2){
-                    R.at<float>(i, j) = value;
-                }
-                color_img.at<Vec3f>(i, j)[k] = value;
+                color_img.at<Vec3f>(i, j)[k] = length[i][j] / max;
             }
         }
     }
-    vector<Mat> res;
-    res.push_back(B);
-    res.push_back(G);
-    res.push_back(R);
-    res.push_back(color_img);
 
     for(int i = 0; i < height; ++i){
         delete[]length[i];
     }
     delete[]length;
-    return res;
+    return color_img;
 }
 
 /**
@@ -160,7 +144,7 @@ void invertSign(int height, int width, float **matrix){
  * @param high 
  */
 void getRandSequence(vector<float> &vec, int low, int high){
-    srand(time(NULL));
+    srand(10); // set seed fix, for decode
     int count = high - low;
     int tail = high - 1;
     for(int i = 0; i < count; ++i){

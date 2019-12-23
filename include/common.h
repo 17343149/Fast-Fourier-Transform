@@ -48,12 +48,12 @@ struct fftPair{
     float** result_real[3];
     float** result_complex[3];
 
-    fftPair(Mat arg, int img_height = -1, int img_width = -1, bool is_print = true){
+    fftPair(Mat arg, int img_height = -1, int img_width = -1, bool is_print = false){
         img = arg.clone();
         findProperSize(img, img_height, img_width);
         int width = img.cols;
         int height = img.rows;
-        if(img.type() != 21){
+        if(img.type() != CV_32FC3){
             img.convertTo(img, CV_32FC3);
             img /= 255.0;
         }
@@ -103,7 +103,7 @@ struct fftPair{
  * 
  * @return Mat 
  */
-vector<Mat> generateFrequencyImg(fftPair*);
+Mat generateFrequencyImg(fftPair*);
 
 /**
  * @brief Get the Time Now

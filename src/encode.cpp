@@ -56,12 +56,34 @@ void encode(fftPair *arg, Mat &img, float factor){
     for(int k = 0; k < 3; ++k){
         for(int i = 0; i < height; ++i){
             for(int j = 0; j < width; ++j){ 
-                if(k == 0 && i == 0)
-                    printf("(%d, %d, %d) -> %f + ", i, j, k, arg->result_real[k][j][i]);
                 arg->result_real[k][j][i] += factor * img.at<Vec3f>(i, j)[k];
-                if(k == 0 && i == 0)
-                    printf("%f = %f\n", factor * img.at<Vec3f>(i, j)[k], arg->result_real[k][j][i]);
             }
         }
     }
+}
+
+// Interface
+Mat encode(Mat ori_img, Mat water_img){
+    int height = ori_img.rows;
+    int width = ori_img.cols;
+    fftPair encryption(ori_img);
+
+    // process addition image
+    vector<vector<float> > vec;
+    resize(water_img, water_img, Size(ori_img.cols, ori_img.rows / 2));
+    Mat addition_img = getEncodeImg(water_img, &encryption, vec);
+
+    // FFT
+    Mat fft_img = fft2d(&encryption);
+
+    // encode!!!
+    encode(&encryption, addition_img, 35.0f);
+
+    Mat ifft_img = ifft2d(&encryption);
+    resize(ifft_img, ifft_img, Size(width, height));
+    if(ifft_img.type() != CV_8UC3){
+        ifft_img *= 255;
+        ifft_img.convertTo(ifft_img, CV_8UC3);
+    }
+    return ifft_img;
 }

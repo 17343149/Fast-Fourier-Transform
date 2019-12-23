@@ -13,6 +13,7 @@
 #define _ENCODE_H
 
 #include "fft2d.h"
+#include "ifft2d.h"
 
 /**
  * @brief Get the Encode Img object
@@ -31,5 +32,11 @@ Mat getEncodeImg(Mat &img, fftPair *arg, vector<vector<float> > &vec);
  * @param factor 
  */
 void encode(fftPair*, Mat &arg, float factor = 1.0f);
+
+/**
+ * @brief Interface of encode!!!
+ * 
+ */
+Mat encode(Mat ori_img, Mat water_img);
 
 #endif

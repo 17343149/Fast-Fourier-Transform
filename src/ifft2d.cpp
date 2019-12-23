@@ -80,7 +80,7 @@ Mat ifft2d(fftPair *arg){
 
     // delete array
     for(int k = 0; k < 3; ++k){
-        for(int i = 0; i < height; ++i){
+        for(int i = 0; i < width; ++i){
             delete[]res_real[k][i];
             delete[]res_complex[k][i];
         }
